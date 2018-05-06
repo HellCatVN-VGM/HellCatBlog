@@ -1,0 +1,43 @@
+var ListBlogLink = &quot;https://meomeoilu.blogspot.com&quot;;
+								var ListCount = 5;  
+								var RandomArray = [];
+								var TotalPosts = 0;
+								var RandomArray = new Array(ListCount);
+								function TotalCount(json) {
+									TotalPosts = json.feed.openSearch$totalResults.$t;
+									console.log(json);
+						            function GenerateNum() {
+						                for (var i = 0; i &lt; ListCount; i++) {
+						                    for (var j = 0; j &lt; RandomArray.length; j++) {
+						                        var RandomNum = Math.floor(Math.random() * (TotalPosts) + 1);
+						                        RandomArray[i] = RandomNum;
+						                    }
+						                }
+						            }
+									GenerateNum();
+									localStorage.setItem("randompostnum", JSON.stringify(RandomArray));
+								}
+								document.write(&#39;&lt;script type=&quot;text/javascript&quot; src=&quot;&#39;+ListBlogLink+&#39;/feeds/posts/default?alt=json-in-script&amp;callback=TotalCount&quot;&gt;&lt;\/script&gt;&#39;);
+								var sttpost = JSON.parse(localStorage.getItem("randompostnum"));
+								console.log(sttpost);
+								var content='';
+								var j=0;
+								for (var i = 0; i &lt; sttpost.length; i++) {
+									function getPostDetails(json){
+										postTitle=json.feed.entry[0].title.$t;
+										postAuthor=json.feed.entry[0].author[0].name.$t;
+										postContent=json.feed.entry[0].content.$t;
+										postDescription=postContent.split(" ").slice(0,30).join(' ');
+										postTime=json.feed.entry[0].published.$t.split("T")[0];
+										postThumb=json.feed.entry[0].media$thumbnail.url.replace( 's72-c', 's72-c' );
+										postLink=json.feed.entry[0].link[4].href;
+										postcmtLink=json.feed.entry[0].link[1].href;
+										postcmtNum=json.feed.entry[0].link[1].title;
+										console.log(postTitle,postLink,postThumb);
+										console.log(json);
+										content+='&lt;div class=&quot;item&quot;&gt;&lt;div class=&quot;thumb-area&quot;&gt;&lt;a class=&quot;pthumb&quot; href=&quot;'+postLink+'&quot;&gt;&lt;img src=&quot;'+postThumb+'&quot;&gt;&lt;/img&gt;&lt;/a&gt;&lt;/div&gt;&lt;div class=&quot;content-area&quot;&gt;&lt;h3&gt;&lt;a href=&quot;&quot;&gt;'+postTitle+'&lt;/a&gt;&lt;/h3&gt;&lt;div class=&quot;postmetainfo&quot;&gt;&lt;span class=&quot;wid-author&quot;&gt;&lt;i class=&quot;fa fa-user&quot;&gt;&lt;/i&gt;'+postAuthor+'&lt;/span&gt;&lt;span class=&quot;wid-date&quot;&gt;&lt;i class=&quot;fa fa-calendar&quot;&gt;&lt;/i&gt;'+postTime+'&lt;/span&gt;&lt;span class=&quot;widcomments&quot;&gt;&lt;i class=&quot;fa fa-comments&quot;&gt;&lt;/i&gt;&lt;a href=&quot;'+postcmtLink+'&quot;&gt;'+postcmtNum+'&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;psummary&quot;&gt;'+postDescription+'&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;';
+										j++
+										localStorage.setItem('content',content)
+									}
+									document.write(&#39;&lt;script type=&quot;text/javascript&quot; src=&quot;&#39;+ListBlogLink+&#39;/feeds/posts/default?alt=json-in-script&amp;start-index='+sttpost[i]+ '&amp;max-results=1&amp;callback=getPostDetails&quot;&gt;&lt;\/script&gt;&#39;);
+						        }				
